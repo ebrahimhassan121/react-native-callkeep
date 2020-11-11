@@ -158,7 +158,14 @@ RCT_REMAP_METHOD(checkIfBusy,
 #ifdef DEBUG
     NSLog(@"[RNCallKeep][checkIfBusy]");
 #endif
-    resolve(@(self.callKeepCallController.callObserver.calls.count > 0));
+//       NSArray *_calls= self.callKeepCallController.callObserver.calls;
+      NSArray *_calls1 = [[CXCallObserver alloc] init].calls;
+    
+
+//    NSString * resultString = [[_calls valueForKey:@"description"] componentsJoinedByString:@""];
+    resolve (_calls1);
+
+//    resolve(@(self.callKeepCallController.callObserver.calls.count > 0));
 }
 
 RCT_REMAP_METHOD(checkSpeaker,
@@ -412,7 +419,7 @@ RCT_EXPORT_METHOD(isCallActive:(NSString *)uuidString)
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:uuidString];
     CXCallUpdate *callUpdate = [[CXCallUpdate alloc] init];
     callUpdate.remoteHandle = [[CXHandle alloc] initWithType:_handleType value:handle];
-    callUpdate.supportsDTMF = YES;
+    callUpdate.supportsDTMF = false;
     callUpdate.supportsHolding = YES;
     callUpdate.supportsGrouping = YES;
     callUpdate.supportsUngrouping = YES;
@@ -514,6 +521,7 @@ RCT_EXPORT_METHOD(isCallActive:(NSString *)uuidString)
             providerConfiguration.includesCallsInRecents = [settings[@"includesCallsInRecents"] boolValue];
         }
     }
+      
     return providerConfiguration;
 }
 
@@ -524,8 +532,7 @@ RCT_EXPORT_METHOD(isCallActive:(NSString *)uuidString)
 #endif
 
     AVAudioSession* audioSession = [AVAudioSession sharedInstance];
-    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionAllowBluetooth error:nil];
-
+    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord  error:nil];
     [audioSession setMode:AVAudioSessionModeVoiceChat error:nil];
 
     double sampleRate = 44100.0;
@@ -533,7 +540,7 @@ RCT_EXPORT_METHOD(isCallActive:(NSString *)uuidString)
 
     NSTimeInterval bufferDuration = .005;
     [audioSession setPreferredIOBufferDuration:bufferDuration error:nil];
-    [audioSession setActive:TRUE error:nil];
+//    [audioSession setActive:TRUE error:nil];
 }
 
 + (BOOL)application:(UIApplication *)application
