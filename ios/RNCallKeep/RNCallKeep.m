@@ -151,6 +151,21 @@ RCT_EXPORT_METHOD(setup:(NSDictionary *)options)
     [self.callKeepProvider setDelegate:self queue:nil];
 }
 
+RCT_EXPORT_METHOD(setSpeakerOn : (BOOL)enabled) {
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    [session setCategory:AVAudioSessionModeDefault error:nil];
+    if(enabled){
+        [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+    }else{
+        
+    }
+    
+    [session setActive:enabled error:nil];
+}
+
+
+
+
 RCT_REMAP_METHOD(checkIfBusy,
                  checkIfBusyWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
@@ -158,14 +173,19 @@ RCT_REMAP_METHOD(checkIfBusy,
 #ifdef DEBUG
     NSLog(@"[RNCallKeep][checkIfBusy]");
 #endif
-//       NSArray *_calls= self.callKeepCallController.callObserver.calls;
-      NSArray *_calls1 = [[CXCallObserver alloc] init].calls;
-    
+//    NSArray *_calls= self.callKeepCallController.callObserver.calls;
+//    for(int i=0;i<_calls.count;i++){
+//        if([_calls i ]){
+//            
+//        }
+//    }
+//      NSArray *_calls1 = [[CXCallObserver alloc] init].calls;
+//
+//
+////    NSString * resultString = [[_calls valueForKey:@"description"] componentsJoinedByString:@""];
+//    resolve (_calls1);
 
-//    NSString * resultString = [[_calls valueForKey:@"description"] componentsJoinedByString:@""];
-    resolve (_calls1);
-
-//    resolve(@(self.callKeepCallController.callObserver.calls.count > 0));
+    resolve(@(self.callKeepCallController.callObserver.calls.count > 0));
 }
 
 RCT_REMAP_METHOD(checkSpeaker,
@@ -493,7 +513,7 @@ RCT_EXPORT_METHOD(isCallActive:(NSString *)uuidString)
 #endif
     CXProviderConfiguration *providerConfiguration = [[CXProviderConfiguration alloc] initWithLocalizedName:settings[@"appName"]];
     providerConfiguration.supportsVideo = YES;
-    providerConfiguration.maximumCallGroups = 3;
+    providerConfiguration.maximumCallGroups = 1;
     providerConfiguration.maximumCallsPerCallGroup = 1;
     if(settings[@"handleType"]){
         int _handleType = [RNCallKeep getHandleType:settings[@"handleType"]];
@@ -540,7 +560,7 @@ RCT_EXPORT_METHOD(isCallActive:(NSString *)uuidString)
 
     NSTimeInterval bufferDuration = .005;
     [audioSession setPreferredIOBufferDuration:bufferDuration error:nil];
-//    [audioSession setActive:TRUE error:nil];
+    [audioSession setActive:TRUE error:nil];
 }
 
 + (BOOL)application:(UIApplication *)application
